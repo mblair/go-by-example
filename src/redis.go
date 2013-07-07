@@ -27,4 +27,23 @@ func main() {
 	getRep, err := c.Cmd("get", "foo").Str()
 	errHandler(err)
 	fmt.Println(getRep)
+
+	c.Cmd("set", "foo1", "bar1")
+	c.Cmd("set", "foo2", "bar2")
+	c.Cmd("set", "foo3", "bar3")
+	mgetRep, err := c.Cmd("mget", "foo1", "foo2", "foo3").List()
+	for i, _ := range mgetRep {
+		fmt.Printf("%d => %s\n", i, mgetRep[i])
+	}
+
+	c.Append("set", "k1", "v1")
+	c.Append("get", "k1")
+	setRep = c.GetReply()
+	errHandler(err)
+	getRep, err = c.GetReply().Str()
+	errHandler(err)
+	fmt.Println(setRep)
+	fmt.Println(getRep)
+
+	// Looks like the radix client doesn't have support for transactions or pubsub, so i'll skip those.
 }
