@@ -22,11 +22,6 @@ func main() {
 
 	fmt.Println(db)
 
-	dropRep, dropErr := db.Exec(
-		`DROP TABLE IF EXISTS items`)
-	errHandler(dropErr)
-	fmt.Println(dropRep)
-
 	createRep, createErr := db.Exec(
 		`CREATE TABLE items
 		 (a int, b float, c boolean,
@@ -54,4 +49,23 @@ func main() {
   num, _ := minsertRep.RowsAffected()
 	fmt.Println(minsertRep)
 	fmt.Println(num)
+
+	rows, selectErr := db.Query("SELECT * FROM items")
+	errHandler(selectErr)
+	defer rows.Close()
+	for rows.Next() {
+		var r1 int
+		var r2 float64
+		var r3 bool
+		var r4 string
+		var r5 time.Time
+		rows.Scan(&r1, &r2, &r3, &r4, &r5)
+		fmt.Println(r1, r2, r3, r4, r5)
+		}
+		rowsErr := rows.Err()
+		errHandler(rowsErr)
+
+		dropRep, dropErr := db.Exec("DROP TABLE items")
+		errHandler(dropErr)
+		fmt.Println(dropRep)
 }
